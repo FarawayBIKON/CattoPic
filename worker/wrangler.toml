@@ -1,4 +1,4 @@
-name = 'cattopic-worker'
+name = 'imghosting'
 main = 'src/index.ts'
 compatibility_date = '2024-12-01'
 compatibility_flags = ['nodejs_compat']
@@ -13,32 +13,10 @@ binding = "IMAGES"
 # R2 Bucket binding
 [[r2_buckets]]
 binding = 'R2_BUCKET'
-bucket_name = 'cattopic-r2'
+bucket_name = 'imghosting'
 
 # D1 Database binding
 [[d1_databases]]
 binding = 'DB'
-database_name = 'CattoPic-D1'
-database_id = 'cb07b667-2a42-4ca1-84ce-49d5114af009'
-
-# KV Namespace for caching
-[[kv_namespaces]]
-binding = "CACHE_KV"
-id = "f04a33814498458a84085799828bc7d7"
-
-# Cron Triggers - cleanup expired images every hour
-[triggers]
-crons = ['0 * * * *']
-
-# Development settings
-[dev]
-port = 8787
-local_protocol = 'http'
-
-# Observability - logging configuration
-[observability]
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-invocation_logs = true
-persist = true
+database_name = 'imghosting'
+database_id = "aa62cc93-cf20-49f5-b8f6-59455cec66f7"
