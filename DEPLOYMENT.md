@@ -236,29 +236,6 @@ DELETE FROM api_keys WHERE key = 'old-api-key';
 
 ---
 
-## 七、部署检查清单
-
-- [ ] Cloudflare R2 Bucket 已创建
-- [ ] Cloudflare D1 Database 已创建
-- [ ] D1 数据库表结构已初始化
-- [ ] wrangler.toml 配置正确
-- [ ] Worker 已部署
-- [ ] API Key 已添加
-- [ ] Vercel 项目已创建
-- [ ] Vercel 环境变量已配置
-- [ ] 部署验证通过
-
----
-
 ## 更新部署
-
-### 更新 Worker
-
-```bash
-cd worker
-pnpm wrangler deploy
-```
-
-### 更新前端
 
 推送代码到 GitHub，Vercel 会自动部署。
