@@ -5,6 +5,7 @@ compatibility_flags = ['nodejs_compat']
 
 [vars]
 ENVIRONMENT = 'production'
+R2_PUBLIC_URL = 'https://r2.catcat.li'
 
 # Images binding for image transformations
 [images]

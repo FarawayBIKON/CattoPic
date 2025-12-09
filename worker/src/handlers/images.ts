@@ -34,8 +34,7 @@ export async function imagesHandler(c: Context<{ Bindings: Env }>): Promise<Resp
     const metadata = new MetadataService(c.env.DB);
     const { images, total } = await metadata.getImages({ page, limit, tag, orientation });
 
-    const workerUrl = new URL(c.req.url).origin;
-    const baseUrl = `${workerUrl}/r2`;
+    const baseUrl = c.env.R2_PUBLIC_URL;
 
     // Add full URLs to images
     const imagesWithUrls = images.map(img => ({
@@ -94,8 +93,7 @@ export async function imageDetailHandler(c: Context<{ Bindings: Env }>): Promise
       return notFoundResponse('图片不存在');
     }
 
-    const workerUrl = new URL(c.req.url).origin;
-    const baseUrl = `${workerUrl}/r2`;
+    const baseUrl = c.env.R2_PUBLIC_URL;
 
     const responseData = {
       image: {
@@ -162,8 +160,7 @@ export async function updateImageHandler(c: Context<{ Bindings: Env }>): Promise
       await cache.invalidateTagsList();
     }
 
-    const workerUrl = new URL(c.req.url).origin;
-    const baseUrl = `${workerUrl}/r2`;
+    const baseUrl = c.env.R2_PUBLIC_URL;
 
     return successResponse({
       image: {

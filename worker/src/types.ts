@@ -55,6 +55,7 @@ export interface Env {
   DB: D1Database;
   CACHE_KV: KVNamespace;
   ENVIRONMENT: string;
+  R2_PUBLIC_URL: string;
   IMAGES?: ImagesBinding;
 }
 

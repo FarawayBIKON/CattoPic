@@ -7,7 +7,7 @@ import { MetadataService } from './services/metadata';
 import { StorageService } from './services/storage';
 
 // Import handlers
-import { uploadHandler, uploadSingleHandler } from './handlers/upload';
+import { uploadSingleHandler } from './handlers/upload';
 import { imagesHandler, imageDetailHandler, updateImageHandler, deleteImageHandler } from './handlers/images';
 import { randomHandler } from './handlers/random';
 import { faviconHandler } from './handlers/favicon';
@@ -55,60 +55,12 @@ app.get('/favicon.svg', faviconHandler);
 // Random image (public, no auth required)
 app.get('/api/random', randomHandler);
 
-// Serve R2 files (public) with Cache API edge caching
-app.get('/r2/*', async (c) => {
-  const path = c.req.path.replace('/r2/', '');
-
-  if (!path) {
-    return c.json({ success: false, error: 'Path required' }, 400);
-  }
-
-  // Use Cloudflare Cache API for edge caching
-  const cache = caches.default;
-  const cacheKey = new Request(c.req.url, c.req.raw);
-
-  // Check edge cache first
-  let response = await cache.match(cacheKey);
-  if (response) {
-    return response;
-  }
-
-  // Cache miss - fetch from R2
-  const object = await c.env.R2_BUCKET.get(path);
-
-  if (!object) {
-    return c.json({ success: false, error: 'Not found' }, 404);
-  }
-
-  // Check ETag for conditional requests
-  const etag = object.httpEtag;
-  const ifNoneMatch = c.req.header('If-None-Match');
-  if (ifNoneMatch && ifNoneMatch === etag) {
-    return new Response(null, { status: 304 });
-  }
-
-  // Build response with caching headers
-  const headers = new Headers();
-  headers.set('Content-Type', object.httpMetadata?.contentType || 'application/octet-stream');
-  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-  headers.set('ETag', etag);
-  headers.set('Access-Control-Allow-Origin', '*');
-
-  response = new Response(object.body, { headers });
-
-  // Store in edge cache (non-blocking)
-  c.executionCtx.waitUntil(cache.put(cacheKey, response.clone()));
-
-  return response;
-});
-
 // === Protected Routes ===
 
 // Auth
 app.post('/api/validate-api-key', authMiddleware, validateApiKeyHandler);
 
-// Upload
-app.post('/api/upload', authMiddleware, uploadHandler);
+// Upload (single file per request - Cloudflare Worker best practice)
 app.post('/api/upload/single', authMiddleware, uploadSingleHandler);
 
 // Images CRUD
