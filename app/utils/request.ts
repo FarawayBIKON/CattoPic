@@ -10,7 +10,7 @@ interface ConfigResponse {
 }
 
 let BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
-let hasInitialized = false;
+let initPromise: Promise<void> | null = null;
 
 async function initializeBaseUrl() {
   try {
@@ -24,14 +24,19 @@ async function initializeBaseUrl() {
   }
 }
 
+// Ensure initialization only runs once, even with concurrent requests
+async function ensureInitialized() {
+  if (!initPromise) {
+    initPromise = initializeBaseUrl();
+  }
+  await initPromise;
+}
+
 export async function request<T>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<T> {
-  if (!hasInitialized) {
-    await initializeBaseUrl();
-    hasInitialized = true;
-  }
+  await ensureInitialized();
 
   const apiKey = getApiKey();
 
