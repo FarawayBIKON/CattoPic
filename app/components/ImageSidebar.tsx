@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from 'motion/react';
 import ImageModal from "../components/ImageModal";
 import { getFullUrl } from "../utils/baseUrl";
 import { ImageIcon, Cross1Icon, ExclamationTriangleIcon } from "./ui/icons";

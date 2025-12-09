@@ -11,7 +11,7 @@ import StatusMessage from './components/StatusMessage'
 import UploadProgress from './components/UploadProgress'
 import ImageSidebar from './components/ImageSidebar'
 import PreviewSidebar from './components/upload/PreviewSidebar'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ImageIcon, PlusCircledIcon } from './components/ui/icons'
 
 const DEFAULT_MAX_UPLOAD_COUNT = 10;

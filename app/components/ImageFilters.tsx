@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { ImageFiltersProps } from "../types";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from 'motion/react';
 import { api } from "../utils/request";
 import { ChevronDownIcon, MagnifyingGlassIcon, MixerHorizontalIcon } from "./ui/icons";
 

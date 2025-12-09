@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { validateApiKey, getApiKey, removeApiKey, setApiKey } from '../utils/auth';
 import { ApiKeyModalProps } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { CheckIcon, LockClosedIcon, InfoCircledIcon, Spinner } from '../components/ui/icons';
 
 export default function ApiKeyModal({ isOpen, onClose, onSuccess }: ApiKeyModalProps) {

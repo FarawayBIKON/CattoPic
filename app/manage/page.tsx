@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
-import { motion } from "framer-motion";
+import { motion } from 'motion/react';
 import Masonry from "react-masonry-css";
 import { getApiKey, validateApiKey, setApiKey } from "../utils/auth";
 import { api } from "../utils/request";

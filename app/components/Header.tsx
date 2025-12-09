@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useTheme } from '../hooks/useTheme'
 import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ImageIcon, HamburgerMenuIcon, LockClosedIcon, SunIcon, MoonIcon } from './ui/icons'
 
 interface HeaderProps {

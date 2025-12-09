@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from 'motion/react';
 import { ImageFile } from "../types";
 import { ImageData } from "../types/image";
 import { ImageInfo } from "./ImageInfo";

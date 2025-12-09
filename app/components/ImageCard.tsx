@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useCallback, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from 'motion/react';
 import { ImageFile } from "../types";
 import { getFullUrl } from "../utils/baseUrl";
 import { LoadingSpinner } from "./LoadingSpinner";
