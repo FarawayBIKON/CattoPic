@@ -8,7 +8,7 @@ import { api } from '../utils/request'
 import { UploadIcon, ExclamationTriangleIcon, ImageIcon } from '../components/ui/icons'
 import { formatFileSize } from '../utils/imageUtils'
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB (presigned URL supports up to 5GB)
 
 interface UploadSectionProps {
   onUpload: (files: File[], expiryMinutes: number, tags: string[]) => Promise<void>
@@ -222,7 +222,7 @@ export default function UploadSection({
                 <div>
                   <p className="font-medium text-red-700 dark:text-red-300 mb-1">文件过大已跳过</p>
                   <p className="text-sm text-red-600 dark:text-red-400 mb-2">
-                    以下文件超过 20MB 限制，已自动跳过：
+                    以下文件超过 500MB 限制，已自动跳过：
                   </p>
                   <ul className="text-sm text-red-600 dark:text-red-400 list-disc list-inside">
                     {oversizedFiles.map((name, index) => (

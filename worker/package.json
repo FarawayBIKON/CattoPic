@@ -9,11 +9,16 @@
     "deploy": "wrangler deploy",
     "tail": "wrangler tail"
   },
-  "keywords": ["cloudflare", "worker", "cattopic"],
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "cattopic"
+  ],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
+    "aws4fetch": "^1.0.20",
     "hono": "^4.10.7"
   },
   "devDependencies": {

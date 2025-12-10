@@ -247,6 +247,15 @@ export default function Home() {
 
   // 文件选择、删除和清空处理函数
   const handleFilesSelected = (files: { id: string, file: File }[]) => {
+    // 选择新文件时，重置上传状态为 idle
+    if (phase !== 'idle') {
+      resetUploadState();
+    }
+    // 清空之前的上传结果，避免 ImageSidebar 意外打开
+    if (uploadResults.length > 0) {
+      setUploadResults([]);
+      setShowResultSidebar(false);
+    }
     setFileDetails(files);
   }
 

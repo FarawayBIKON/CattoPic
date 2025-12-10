@@ -2,7 +2,23 @@ import { request } from './request'
 import { UploadResult } from '../types'
 import { FileUploadStatus } from '../types/upload'
 
+// Threshold for using presigned URL upload (100MB)
+const PRESIGN_UPLOAD_THRESHOLD = 100 * 1024 * 1024
+
 interface SingleUploadResponse {
+  success: boolean
+  result: UploadResult
+  error?: string
+}
+
+interface PresignResponse {
+  uploadUrl: string
+  key: string
+  id: string
+  expiresIn: number
+}
+
+interface ConfirmResponse {
   success: boolean
   result: UploadResult
   error?: string
@@ -41,6 +57,96 @@ export async function concurrentUpload(options: ConcurrentUploadOptions): Promis
   const queue = [...files]
   const active: Promise<void>[] = []
 
+  /**
+   * Upload a large file via presigned URL
+   */
+  async function uploadLargeFile(item: { id: string; file: File }): Promise<void> {
+    // 1. Get presigned URL
+    const presignResponse = await request<PresignResponse>('/api/upload/presign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: item.file.name,
+        contentType: item.file.type,
+        size: item.file.size,
+      }),
+      signal,
+    })
+
+    if (!presignResponse.uploadUrl) {
+      throw new Error('Failed to get presigned URL')
+    }
+
+    // 2. Upload directly to R2
+    const uploadResponse = await fetch(presignResponse.uploadUrl, {
+      method: 'PUT',
+      body: item.file,
+      headers: {
+        'Content-Type': item.file.type,
+      },
+      signal,
+    })
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Direct upload failed: ${uploadResponse.status}`)
+    }
+
+    // Update to processing (compression phase)
+    onFileStatusChange(item.id, 'processing')
+
+    // 3. Confirm upload and trigger compression
+    const confirmResponse = await request<ConfirmResponse>('/api/upload/confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        key: presignResponse.key,
+        id: presignResponse.id,
+        tags: tags.join(','),
+        expiryMinutes,
+        quality,
+        maxWidth,
+      }),
+      signal,
+    })
+
+    if (confirmResponse.success && confirmResponse.result) {
+      onFileStatusChange(item.id, 'success', confirmResponse.result)
+      results.push(confirmResponse.result)
+    } else {
+      throw new Error(confirmResponse.error || 'Confirm upload failed')
+    }
+  }
+
+  /**
+   * Upload a regular file via Worker
+   */
+  async function uploadRegularFile(item: { id: string; file: File }): Promise<void> {
+    // Build FormData for single file
+    const formData = new FormData()
+    formData.append('image', item.file)
+    formData.append('tags', tags.join(','))
+    formData.append('expiryMinutes', expiryMinutes.toString())
+    formData.append('quality', quality.toString())
+    formData.append('maxWidth', maxWidth.toString())
+    formData.append('preserveAnimation', preserveAnimation.toString())
+
+    // Update to processing (after upload starts, before compression completes)
+    onFileStatusChange(item.id, 'processing')
+
+    const response = await request<SingleUploadResponse>('/api/upload/single', {
+      method: 'POST',
+      body: formData,
+      signal,
+    })
+
+    if (response.success && response.result) {
+      onFileStatusChange(item.id, 'success', response.result)
+      results.push(response.result)
+    } else {
+      throw new Error(response.error || 'Upload failed')
+    }
+  }
+
   async function uploadOne(item: { id: string; file: File }): Promise<void> {
     // Check if cancelled
     if (signal?.aborted) {
@@ -51,35 +157,12 @@ export async function concurrentUpload(options: ConcurrentUploadOptions): Promis
     onFileStatusChange(item.id, 'uploading')
 
     try {
-      // Build FormData for single file
-      const formData = new FormData()
-      formData.append('image', item.file)
-      formData.append('tags', tags.join(','))
-      formData.append('expiryMinutes', expiryMinutes.toString())
-      formData.append('quality', quality.toString())
-      formData.append('maxWidth', maxWidth.toString())
-      formData.append('preserveAnimation', preserveAnimation.toString())
-
-      // Update to processing (after upload starts, before compression completes)
-      onFileStatusChange(item.id, 'processing')
-
-      const response = await request<SingleUploadResponse>('/api/upload/single', {
-        method: 'POST',
-        body: formData,
-        signal,
-      })
-
-      if (response.success && response.result) {
-        onFileStatusChange(item.id, 'success', response.result)
-        results.push(response.result)
+      // Choose upload method based on file size
+      if (item.file.size >= PRESIGN_UPLOAD_THRESHOLD) {
+        console.log(`Large file detected (${(item.file.size / 1024 / 1024).toFixed(1)}MB), using presigned URL upload`)
+        await uploadLargeFile(item)
       } else {
-        const errorResult: UploadResult = {
-          id: '',
-          status: 'error',
-          error: response.error || 'Upload failed',
-        }
-        onFileStatusChange(item.id, 'error', errorResult)
-        results.push(errorResult)
+        await uploadRegularFile(item)
       }
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
