@@ -1,0 +1,45 @@
+name = 'imghosting'
+main = 'src/index.ts'
+compatibility_date = '2024-12-01'
+compatibility_flags = ['nodejs_compat']
+
+[vars]
+ENVIRONMENT = 'production'
+R2_PUBLIC_URL = 'https://r2.prpr-bocchi.org'
+
+# Images binding for image transformations (Cloudflare Images)
+[images]
+binding = "IMAGES"
+
+# R2 Bucket binding
+[[r2_buckets]]
+binding = 'R2_BUCKET'
+bucket_name = 'imghosting'
+
+# D1 Database binding
+[[d1_databases]]
+binding = 'DB'
+database_name = 'imghosting'
+database_id = "aa62cc93-cf20-49f5-b8f6-59455cec66f7"
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "CACHE_KV"
+# Your KV namespace ID (get from: wrangler kv namespace list)
+id = "f77887d23cf543ea82f88b91db5334e4"
+
+# Queue for async R2 deletion
+[[queues.producers]]
+# Your queue name
+queue = "imghosting"
+binding = "DELETE_QUEUE"
+
+[[queues.consumers]]
+# Same queue name as above
+queue = "imghosting"
+max_batch_size = 10
+max_batch_timeout = 5
+
+# Cron Triggers - cleanup expired images every hour
+[triggers]
+crons = ['0 * * * *']

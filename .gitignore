@@ -3,3 +3,6 @@ out/
 node_modules/
 .env.local
 .wrangler/
+
+# Worker configuration (contains sensitive IDs)
+worker/wrangler.toml

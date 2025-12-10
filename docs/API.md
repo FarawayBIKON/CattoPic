@@ -1,5 +1,7 @@
 # CattoPic API 文档
 
+[English](./API_EN.md)
+
 ## 概述
 
 CattoPic 是一个图像托管和管理服务，提供图像上传、存储、格式转换和随机获取等功能。
@@ -90,6 +92,29 @@ curl "https://your-worker.workers.dev/api/random?tags=nature,outdoor&orientation
 
 # 获取 WebP 格式
 curl "https://your-worker.workers.dev/api/random?format=webp" -o random.webp
+```
+
+**使用场景示例**
+
+```bash
+# 场景 1: 网站随机背景图（桌面端横向）
+curl "https://your-worker.workers.dev/api/random?orientation=landscape&format=webp"
+
+# 场景 2: 手机壁纸 API（竖向）
+curl "https://your-worker.workers.dev/api/random?orientation=portrait&tags=wallpaper"
+
+# 场景 3: 猫咪图片 API（排除 NSFW 内容）
+curl "https://your-worker.workers.dev/api/random?tags=cat&exclude=nsfw,private"
+
+# 场景 4: 自然风景（多标签组合）
+curl "https://your-worker.workers.dev/api/random?tags=nature,landscape&exclude=city"
+
+# 场景 5: 在 HTML img 标签中直接使用
+# <img src="https://your-worker.workers.dev/api/random?orientation=auto" />
+
+# 场景 6: 自动方向检测（根据 User-Agent）
+# 移动设备会返回竖向图片，桌面设备会返回横向图片
+curl -A "Mozilla/5.0 (iPhone)" "https://your-worker.workers.dev/api/random?orientation=auto"
 ```
 
 ---
