@@ -64,7 +64,7 @@ export default function ImageModal({ image, isOpen, onClose, onDelete }: ImageMo
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden w-full max-w-xl max-h-[85vh] shadow-2xl border border-gray-200/50 dark:border-gray-700/50"
+            className="relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden w-full max-w-xl max-h-[85vh] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-2xl border border-gray-200/80 dark:border-gray-700/50 ring-1 ring-black/[0.05] dark:ring-white/[0.05]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* 头部 - 渐变背景 */}

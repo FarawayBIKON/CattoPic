@@ -233,14 +233,14 @@ const ImageCard = React.memo(function ImageCard({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         whileHover={{ y: -8, transition: { duration: 0.2 } }}
-        className="rounded-xl shadow-lg overflow-hidden group cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-300 h-full"
+        className="rounded-2xl overflow-hidden group cursor-pointer bg-white dark:bg-slate-800 border border-gray-200/80 dark:border-gray-700 shadow-[0_2px_12px_-3px_rgba(0,0,0,0.08),0_4px_24px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_32px_-8px_rgba(99,102,241,0.25),0_4px_16px_-4px_rgba(0,0,0,0.1)] hover:border-indigo-300/70 dark:hover:border-indigo-500/70 dark:shadow-[0_2px_12px_-3px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_8px_32px_-8px_rgba(99,102,241,0.35)] transition-all duration-300 h-full ring-1 ring-black/[0.03] dark:ring-white/[0.05]"
         onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onContextMenu={handleContextMenu}
       >
         <div
-          className={`relative ${heightClass} ${aspectRatio} overflow-hidden bg-gray-100 dark:bg-gray-900 w-full`}
+          className={`relative ${heightClass} ${aspectRatio} overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-800 w-full`}
         >
           {isGif ? (
             // Use img tag for GIFs to ensure animation plays

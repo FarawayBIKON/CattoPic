@@ -261,10 +261,12 @@ export default function Manage() {
                   )}
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center h-64 bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700">
-                  <ImageIcon className="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600" />
-                  <p className="text-lg font-medium">暂无图片</p>
-                  <p className="mt-2 text-sm">请上传图片或调整筛选条件</p>
+                <div className="flex flex-col items-center justify-center h-64 bg-white dark:bg-slate-800 rounded-2xl shadow-[0_2px_12px_-3px_rgba(0,0,0,0.08),0_4px_24px_-8px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_12px_-3px_rgba(0,0,0,0.3)] p-8 text-gray-500 dark:text-gray-400 border border-gray-200/80 dark:border-gray-700 ring-1 ring-black/[0.03] dark:ring-white/[0.05]">
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-800 mb-4">
+                    <ImageIcon className="w-12 h-12 text-gray-400 dark:text-gray-500" />
+                  </div>
+                  <p className="text-lg font-semibold text-gray-600 dark:text-gray-300">暂无图片</p>
+                  <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">请上传图片或调整筛选条件</p>
                 </div>
               )}
             </>
