@@ -2,6 +2,8 @@
 
 一个自托管的图片托管服务，支持自动格式转换、标签管理和随机图片 API。基于 Next.js 前端和 Cloudflare Workers 后端构建。
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Yuri-NagaSaki/CattoPic)
+
 [English](../README.md)
 
 ## 系统架构
@@ -85,6 +87,7 @@ flowchart TB
 - **随机图片 API** - 公开 API，支持多种过滤条件
 - **过期支持** - 为临时图片设置过期时间
 - **现代化 UI** - 简洁的管理界面，支持深色模式
+- **大文件支持** - 支持上传高达 500MB 的图片，大文件通过 R2 预签名 URL 直传
 
 ## 技术栈
 
@@ -201,6 +204,53 @@ INSERT INTO api_keys (key, created_at) VALUES ('your-secure-api-key', datetime('
 "
 ```
 
+### 5.1 大文件上传配置（可选）
+
+如需支持 100MB 以上的图片上传，需配置 R2 预签名 URL：
+
+#### 创建 R2 API Token
+
+1. 前往 Cloudflare Dashboard → R2 → Manage R2 API Tokens
+2. 创建 Token，权限选择 "Object Read & Write"
+3. 指定 Bucket：`cattopic-r2`
+
+#### 配置 R2 CORS
+
+在 R2 Bucket 设置中添加 CORS 规则：
+
+```json
+[
+  {
+    "AllowedOrigins": ["*"],
+    "AllowedMethods": ["PUT"],
+    "AllowedHeaders": ["Content-Type"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+#### 设置 Worker Secrets
+
+```bash
+wrangler secret put R2_ACCESS_KEY_ID
+wrangler secret put R2_SECRET_ACCESS_KEY
+```
+
+#### 更新 wrangler.toml
+
+```toml
+[vars]
+R2_ACCOUNT_ID = '你的账户ID'
+R2_BUCKET_NAME = 'cattopic-r2'
+```
+
+#### 上传限制说明
+
+| 文件大小 | 上传方式 | 压缩处理 |
+|---------|---------|---------|
+| < 100MB | Worker 直接接收 | Cloudflare Images 压缩 |
+| 100MB - 500MB | R2 预签名 URL 直传 | ≤70MB 压缩，>70MB 保留原图 |
+
 ### 6. 部署前端
 
 在 Vercel 配置环境变量后部署：
@@ -255,7 +305,9 @@ Authorization: Bearer <your-api-key>
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| POST | `/api/upload/single` | 上传图片 |
+| POST | `/api/upload/single` | 上传图片（< 100MB） |
+| POST | `/api/upload/presign` | 获取大文件上传预签名 URL |
+| POST | `/api/upload/confirm` | 确认上传并触发压缩处理 |
 | GET | `/api/images` | 获取图片列表（分页） |
 | GET | `/api/images/:id` | 获取图片详情 |
 | PUT | `/api/images/:id` | 更新图片元数据 |

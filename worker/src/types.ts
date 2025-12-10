@@ -61,6 +61,37 @@ export interface Env {
   R2_PUBLIC_URL: string;
   IMAGES?: ImagesBinding;
   DELETE_QUEUE: Queue<QueueMessage>;
+  // R2 API credentials for presigned URLs
+  R2_ACCESS_KEY_ID?: string;
+  R2_SECRET_ACCESS_KEY?: string;
+  R2_ACCOUNT_ID?: string;
+  R2_BUCKET_NAME?: string;
+}
+
+// Presigned URL types
+export interface PresignRequest {
+  filename: string;
+  contentType: string;
+  size: number;
+  tags?: string;
+  expiryMinutes?: number;
+}
+
+export interface PresignResponse {
+  uploadUrl: string;
+  key: string;
+  id: string;
+  expiresIn: number;
+}
+
+export interface ConfirmRequest {
+  key: string;
+  id: string;
+  tags?: string;
+  expiryMinutes?: number;
+  quality?: number;
+  maxWidth?: number;
+  maxHeight?: number;
 }
 
 // D1 row type for images table

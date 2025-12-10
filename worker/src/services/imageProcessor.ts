@@ -150,6 +150,19 @@ export class ImageProcessor {
     return supported.includes(format.toLowerCase());
   }
 
+  // Get format from MIME type
+  static getFormatFromMimeType(mimeType: string): string | null {
+    const mimeToFormat: Record<string, string> = {
+      'image/jpeg': 'jpeg',
+      'image/jpg': 'jpeg',
+      'image/png': 'png',
+      'image/gif': 'gif',
+      'image/webp': 'webp',
+      'image/avif': 'avif',
+    };
+    return mimeToFormat[mimeType.toLowerCase()] || null;
+  }
+
   // Validate file size
   static isValidFileSize(size: number, maxSize: number = 10 * 1024 * 1024): boolean {
     return size <= maxSize;

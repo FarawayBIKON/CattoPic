@@ -8,6 +8,8 @@ import { StorageService } from './services/storage';
 
 // Import handlers
 import { uploadSingleHandler } from './handlers/upload';
+import { presignHandler } from './handlers/presign';
+import { confirmHandler } from './handlers/confirm';
 import { imagesHandler, imageDetailHandler, updateImageHandler, deleteImageHandler } from './handlers/images';
 import { randomHandler } from './handlers/random';
 import { faviconHandler } from './handlers/favicon';
@@ -64,6 +66,10 @@ app.post('/api/validate-api-key', authMiddleware, validateApiKeyHandler);
 
 // Upload (single file per request - Cloudflare Worker best practice)
 app.post('/api/upload/single', authMiddleware, uploadSingleHandler);
+
+// Large file upload via presigned URL (for files >= 100MB)
+app.post('/api/upload/presign', authMiddleware, presignHandler);
+app.post('/api/upload/confirm', authMiddleware, confirmHandler);
 
 // Images CRUD
 app.get('/api/images', authMiddleware, imagesHandler);

@@ -2,6 +2,8 @@
 
 A self-hosted image hosting service with automatic format conversion, tag management, and a random image API. Built with Next.js frontend and Cloudflare Workers backend.
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Yuri-NagaSaki/CattoPic)
+
 [中文文档](./docs/README_CN.md)
 
 ## Architecture
@@ -85,6 +87,7 @@ flowchart TB
 - **Random Image API** - Public API for random images with filtering options
 - **Expiry Support** - Set expiration time for temporary images
 - **Modern UI** - Clean management interface with dark mode support
+- **Large File Support** - Upload images up to 500MB, large files uploaded directly to R2 via presigned URLs
 
 ## Tech Stack
 
@@ -201,6 +204,53 @@ INSERT INTO api_keys (key, created_at) VALUES ('your-secure-api-key', datetime('
 "
 ```
 
+### 5.1 Large File Upload Configuration (Optional)
+
+To enable uploads larger than 100MB, configure R2 presigned URL upload:
+
+#### Create R2 API Token
+
+1. Go to Cloudflare Dashboard → R2 → Manage R2 API Tokens
+2. Create token with "Object Read & Write" permission
+3. Specify bucket: `cattopic-r2`
+
+#### Configure R2 CORS
+
+In R2 bucket settings, add CORS policy:
+
+```json
+[
+  {
+    "AllowedOrigins": ["*"],
+    "AllowedMethods": ["PUT"],
+    "AllowedHeaders": ["Content-Type"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+#### Set Worker Secrets
+
+```bash
+wrangler secret put R2_ACCESS_KEY_ID
+wrangler secret put R2_SECRET_ACCESS_KEY
+```
+
+#### Update wrangler.toml
+
+```toml
+[vars]
+R2_ACCOUNT_ID = 'your-account-id'
+R2_BUCKET_NAME = 'cattopic-r2'
+```
+
+#### Upload Limits
+
+| File Size | Upload Method | Compression |
+|-----------|--------------|-------------|
+| < 100MB | Worker direct | Cloudflare Images |
+| 100MB - 500MB | R2 Presigned URL | ≤70MB compressed, >70MB original only |
+
 ### 6. Deploy Frontend
 
 Deploy to Vercel with environment variable:
@@ -255,7 +305,9 @@ Authorization: Bearer <your-api-key>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/upload/single` | Upload image |
+| POST | `/api/upload/single` | Upload image (< 100MB) |
+| POST | `/api/upload/presign` | Get presigned URL for large file upload |
+| POST | `/api/upload/confirm` | Confirm upload and trigger compression |
 | GET | `/api/images` | List images (paginated) |
 | GET | `/api/images/:id` | Get image details |
 | PUT | `/api/images/:id` | Update image metadata |
