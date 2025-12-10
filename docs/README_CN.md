@@ -169,9 +169,29 @@ queue = "cattopic-delete-queue"
 
 ### 4. 部署 Worker
 
+**方式 A：手动部署**
+
 ```bash
 pnpm wrangler deploy
 ```
+
+**方式 B：GitHub Actions（推荐 Fork 用户使用）**
+
+使用 GitHub Actions 部署可避免同步上游时的配置冲突。
+
+1. **创建 API Token**：前往 [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens) → Create Token → 选择 "Edit Cloudflare Workers" 模板
+
+2. **获取 Account ID**：运行 `pnpm wrangler whoami` 查看你的 Account ID
+
+3. **配置 GitHub Secrets**（Settings → Secrets and variables → Actions）：
+
+| Secret | 说明 |
+|--------|------|
+| `CLOUDFLARE_API_TOKEN` | 你的 API Token |
+| `CLOUDFLARE_ACCOUNT_ID` | 你的 Account ID |
+| `WRANGLER_TOML` | 完整的 `wrangler.toml` 文件内容 |
+
+4. **触发方式**：推送到 main 分支的 `worker/**` 目录，或在 Actions 标签页手动触发
 
 ### 5. 添加 API Key
 
@@ -272,4 +292,4 @@ NEXT_PUBLIC_API_URL=http://localhost:8787
 
 ## 许可证
 
-MIT
+[GPL-3.0](../LICENSE)

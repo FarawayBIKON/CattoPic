@@ -169,9 +169,29 @@ queue = "cattopic-delete-queue"
 
 ### 4. Deploy Worker
 
+**Option A: Manual Deploy**
+
 ```bash
 pnpm wrangler deploy
 ```
+
+**Option B: GitHub Actions (Recommended for Fork users)**
+
+GitHub Actions deployment avoids configuration conflicts when syncing upstream.
+
+1. **Create API Token**: Go to [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens) → Create Token → Use "Edit Cloudflare Workers" template
+
+2. **Get Account ID**: Run `pnpm wrangler whoami` to find your Account ID
+
+3. **Configure GitHub Secrets** (Settings → Secrets and variables → Actions):
+
+| Secret | Description |
+|--------|-------------|
+| `CLOUDFLARE_API_TOKEN` | Your API Token |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Account ID |
+| `WRANGLER_TOML` | Complete content of your `wrangler.toml` file |
+
+4. **Trigger**: Push to `worker/**` on main branch, or manually trigger via Actions tab
 
 ### 5. Add API Key
 
@@ -272,4 +292,6 @@ NEXT_PUBLIC_API_URL=http://localhost:8787
 
 ## License
 
-MIT
+[GPL-3.0](./LICENSE)
+
+
