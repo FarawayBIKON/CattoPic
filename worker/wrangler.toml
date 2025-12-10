@@ -5,7 +5,7 @@ compatibility_flags = ['nodejs_compat']
 
 [vars]
 ENVIRONMENT = 'production'
-R2_PUBLIC_URL = 'https://r2.catcat.li'
+R2_PUBLIC_URL = 'https://r2.prpr-bocchi.org'
 
 # Images binding for image transformations
 [images]
@@ -18,6 +18,6 @@ bucket_name = 'imghosting'
 
 # D1 Database binding
 [[d1_databases]]
-binding = 'imghosting'
+binding = 'DB'
 database_name = 'imghosting'
 database_id = "aa62cc93-cf20-49f5-b8f6-59455cec66f7"
