@@ -13,6 +13,8 @@ import { randomHandler } from './handlers/random';
 import { faviconHandler } from './handlers/favicon';
 import { tagsHandler, createTagHandler, renameTagHandler, deleteTagHandler, batchTagsHandler } from './handlers/tags';
 import { validateApiKeyHandler, configHandler, cleanupHandler } from './handlers/system';
+import { handleQueueBatch } from './handlers/queue';
+import type { QueueMessage } from './types/queue';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -80,15 +82,37 @@ app.post('/api/tags/batch', authMiddleware, batchTagsHandler);
 app.get('/api/config', authMiddleware, configHandler);
 app.post('/api/cleanup', authMiddleware, cleanupHandler);
 
-// 404 handler
+// 404 handler - ensure CORS headers are included
 app.notFound((c) => {
-  return c.json({ success: false, error: 'Not found' }, 404);
+  return new Response(
+    JSON.stringify({ success: false, error: 'Not found' }),
+    {
+      status: 404,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    }
+  );
 });
 
-// Error handler
+// Error handler - ensure CORS headers are included
 app.onError((err, c) => {
   console.error('Error:', err);
-  return c.json({ success: false, error: 'Internal server error' }, 500);
+  return new Response(
+    JSON.stringify({ success: false, error: 'Internal server error' }),
+    {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    }
+  );
 });
 
 // Scheduled handler for cron jobs - cleanup expired images
@@ -133,9 +157,18 @@ async function scheduledHandler(
   }
 }
 
+// Queue handler for async R2 deletion
+async function queueHandler(
+  batch: MessageBatch<QueueMessage>,
+  env: Env
+): Promise<void> {
+  await handleQueueBatch(batch, env);
+}
+
 const handlers = {
   fetch: app.fetch,
   scheduled: scheduledHandler,
+  queue: queueHandler,
 };
 
 export default handlers;

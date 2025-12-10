@@ -58,7 +58,7 @@
 }
 
 @utility card {
-  @apply bg-light-bg-secondary border border-light-border rounded-2xl shadow-lg backdrop-blur-xs dark:bg-dark-bg-secondary dark:border-dark-border transition-all duration-300;
+  @apply bg-light-bg-secondary border border-gray-200/80 rounded-2xl shadow-[0_2px_12px_-3px_rgba(0,0,0,0.08),0_4px_24px_-8px_rgba(0,0,0,0.05)] backdrop-blur-xs dark:bg-dark-bg-secondary dark:border-dark-border dark:shadow-[0_2px_12px_-3px_rgba(0,0,0,0.3)] ring-1 ring-black/[0.03] dark:ring-white/[0.05] transition-all duration-300;
 }
 
 @utility btn-primary {
@@ -184,11 +184,12 @@
     body {
         font-family: Inter, "Noto Sans SC", system-ui, -apple-system, sans-serif;
         font-weight: 700;
-        @apply bg-light-bg-primary text-light-text-primary transition-colors duration-300;
+        @apply bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 text-light-text-primary transition-colors duration-300;
+        min-height: 100vh;
     }
 
     .dark body {
-        @apply bg-dark-bg-primary text-dark-text-primary;
+        @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-900 text-dark-text-primary;
     }
 }
 

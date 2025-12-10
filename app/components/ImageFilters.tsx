@@ -226,7 +226,7 @@ export default function ImageFilters({ onFilterChange }: ImageFiltersProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="fixed bottom-20 right-6 z-40 bg-white dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800/50 p-4 w-72"
+            className="fixed bottom-20 right-6 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.15),0_4px_16px_-4px_rgba(0,0,0,0.1)] dark:shadow-2xl border border-gray-200/80 dark:border-gray-800/50 p-4 w-72 ring-1 ring-black/[0.03] dark:ring-white/[0.05]"
           >
             <div className="space-y-3">
               {renderFilterOption("format")}
