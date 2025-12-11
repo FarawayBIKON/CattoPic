@@ -208,6 +208,7 @@ INSERT INTO api_keys (key, created_at) VALUES ('your-secure-api-key', datetime('
 | 变量名 | 值 |
 |--------|-----|
 | `NEXT_PUBLIC_API_URL` | `https://your-worker.workers.dev` |
+| `NEXT_PUBLIC_REMOTE_PATTERNS` | `https://your-worker.workers.dev,https://r2`|
 
 ## API 概览
 

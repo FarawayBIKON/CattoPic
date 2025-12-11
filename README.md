@@ -208,6 +208,7 @@ Deploy to Vercel with environment variable:
 | Variable | Value |
 |----------|-------|
 | `NEXT_PUBLIC_API_URL` | `https://your-worker.workers.dev` |
+| `NEXT_PUBLIC_REMOTE_PATTERNS` | `https://your-worker.workers.dev,https://r2`|
 
 ## API Overview
 
