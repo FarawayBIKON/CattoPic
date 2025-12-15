@@ -1,4 +1,5 @@
 const API_KEY_KEY = "cattopic_api_key";
+export const API_KEY_CHANGE_EVENT = "cattopic_api_key_change";
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 export const getApiKey = (): string | null => {
   if (typeof window !== "undefined") {
@@ -10,12 +11,14 @@ export const getApiKey = (): string | null => {
 export const setApiKey = (apiKey: string): void => {
   if (typeof window !== "undefined") {
     localStorage.setItem(API_KEY_KEY, apiKey);
+    window.dispatchEvent(new Event(API_KEY_CHANGE_EVENT));
   }
 };
 
 export const removeApiKey = (): void => {
   if (typeof window !== "undefined") {
     localStorage.removeItem(API_KEY_KEY);
+    window.dispatchEvent(new Event(API_KEY_CHANGE_EVENT));
   }
 };
 

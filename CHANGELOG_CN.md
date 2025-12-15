@@ -21,9 +21,11 @@
 - `/api/random` 改为 302 重定向到实际图片 URL（不再由 Worker 代理回源返回图片字节，Transform-URL 场景更稳定）。
 - 关闭 Next.js 图片优化（图片已使用 Transform-URL 输出，无需再二次优化）。
 - Transform-URL 参数改为严格按配置输出（不再附加额外参数；未设置最大尺寸时不强制 AVIF 缩放）。
+- 管理页瀑布流列表引入 TanStack Virtual 虚拟渲染，保持大图库场景下 DOM 数量稳定。
 
 ### 修复
 
 - 修复删除图片后上传页/管理页未及时刷新（TanStack Query 缓存 + recent uploads 列表导致需强刷）。
 - 修复管理页「随机图 API 生成器」未能正确解析真实 API Base URL（改为从 `/api/config` 获取），仍输出占位链接 `https://your-worker.workers.dev` 的问题。
 - 修复 `/api/images` 分页参数无边界问题，并统一对 `/api/images/:id` 的标签更新进行清洗/归一化处理。
+- 修复管理页在未提供 API Key 时仍发起受保护接口请求的问题。

@@ -32,6 +32,7 @@ interface UseImagesOptions {
   orientation?: string;
   format?: string;
   limit?: number;
+  enabled?: boolean;
 }
 
 function matchesFilters(image: ImageFile, tag: string, orientation: string, format: string): boolean {
@@ -81,7 +82,7 @@ function mergeFirstPageImages(
 
 // Hook for infinite scrolling image list
 export function useInfiniteImages(options: UseImagesOptions = {}) {
-  const { tag = '', orientation = '', format = 'all', limit = 24 } = options;
+  const { tag = '', orientation = '', format = 'all', limit = 24, enabled = true } = options;
   const queryClient = useQueryClient();
 
   const recentUploads = queryClient.getQueryData<ImageFile[]>(queryKeys.images.recentUploads()) || [];
@@ -126,6 +127,7 @@ export function useInfiniteImages(options: UseImagesOptions = {}) {
     },
     initialPageParam: 1,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled,
     ...(placeholder ? { placeholderData: placeholder } : {}),
     select: (data) => {
       const latestRecent = queryClient.getQueryData<ImageFile[]>(queryKeys.images.recentUploads()) || [];
@@ -183,7 +185,7 @@ export function useInfiniteImages(options: UseImagesOptions = {}) {
 
 // Hook for paginated image list (non-infinite)
 export function useImages(options: UseImagesOptions & { page?: number } = {}) {
-  const { page = 1, tag = '', orientation = '', format = 'all', limit = 24 } = options;
+  const { page = 1, tag = '', orientation = '', format = 'all', limit = 24, enabled = true } = options;
   const queryClient = useQueryClient();
 
   const recentUploads = queryClient.getQueryData<ImageFile[]>(queryKeys.images.recentUploads()) || [];
@@ -216,6 +218,7 @@ export function useImages(options: UseImagesOptions & { page?: number } = {}) {
       return api.get<ImageListResponse>('/api/images', params);
     },
     staleTime: 5 * 60 * 1000,
+    enabled,
     ...(placeholder ? { placeholderData: placeholder } : {}),
     select: (data) => {
       const filtered = {
